@@ -7,7 +7,7 @@ I am able to achieve social login with multiple RESTful resource by following tw
 (3) Checkout auth-server from social demo: https://github.com/spring-guides/tut-spring-boot-oauth2/tree/master/auth-server
 
 (4) Open application.yml of "ui" project and do following changes:
-
+```
 server.port: 9001
 server.context-path: /zuul
 debug: true
@@ -40,8 +40,10 @@ zuul:
 logging:
   level:
     org.springframework.security: DEBUG
+```
 (5) Open application.yml of auth-server and add google properties:
 
+```
 google:
   client:
     clientId: <your client id>
@@ -53,10 +55,13 @@ google:
     redirect-uri: http://localhost:8080
   resource:
     userInfoUri: https://www.googleapis.com/plus/v1/people/me
+```
+
 (6) Open SocialApplication.java of auth-server : Add google related bean and filters (similar to facebook and github).
 
 (7) rename application.properties to application.yml of "resource" project following is the content of that yml:
 
+```
 server:
   port: 9000
   context-path: /resource
@@ -69,4 +74,6 @@ logging:
   level:
     org.springframework.security: DEBUG
     org.springframework.web: DEBUG
+```
+
 (8) Now run auth-server, resource and ui projects and hit URL with port 9001 and context /zuul.
