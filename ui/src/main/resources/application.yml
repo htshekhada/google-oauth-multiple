@@ -1,0 +1,32 @@
+server.port: 9001
+server.context-path: /zuul
+debug: true
+
+spring:
+  aop:
+    proxy-target-class: true
+
+
+security:
+  oauth2:
+    client:
+      client-id: acme
+      client-secret: acmesecret
+      access-token-uri: http://localhost:8080/oauth/token
+      user-authorization-uri: http://localhost:8080/oauth/authorize
+      grant-type: implicit
+    resource:
+      user-info-uri: http://localhost:8080/me
+
+zuul:
+  routes:
+    resource:
+      path: /resource/**
+      url: http://localhost:9000/resource
+    user:
+      path: /user/**
+      url: http://localhost:8080/me
+
+logging:
+  level:
+    org.springframework.security: DEBUG

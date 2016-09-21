@@ -1,0 +1,12 @@
+server:
+  port: 9000
+  context-path: /resource
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://localhost:8080/me
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG

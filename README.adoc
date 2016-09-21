@@ -1,0 +1,72 @@
+I am able to achieve social login with multiple RESTful resource by following two sample applications from spring, following are the steps:
+
+(1) Checkout https://github.com/spring-guides/tut-spring-security-and-angular-js/tree/master/oauth2
+
+(2) Delete "authserver" folder (We will use auth-server from another project)
+
+(3) Checkout auth-server from social demo: https://github.com/spring-guides/tut-spring-boot-oauth2/tree/master/auth-server
+
+(4) Open application.yml of "ui" project and do following changes:
+
+server.port: 9001
+server.context-path: /zuul
+debug: true
+
+spring:
+  aop:
+    proxy-target-class: true
+
+
+security:
+  oauth2:
+    client:
+      client-id: acme
+      client-secret: acmesecret
+      access-token-uri: http://localhost:8080/oauth/token
+      user-authorization-uri: http://localhost:8080/oauth/authorize
+      grant-type: implicit
+    resource:
+      user-info-uri: http://localhost:8080/me
+
+zuul:
+  routes:
+    resource:
+      path: /resource/**
+      url: http://localhost:9000/resource
+    user:
+      path: /user/**
+      url: http://localhost:8080/me
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+(5) Open application.yml of auth-server and add google properties:
+
+google:
+  client:
+    clientId: <your client id>
+    clientSecret: <your client secret>
+    accessTokenUri: https://accounts.google.com/o/oauth2/token
+    scope: profile,email
+    userAuthorizationUri: https://accounts.google.com/o/oauth2/auth
+    clientAuthenticationScheme: form
+    redirect-uri: http://localhost:8080
+  resource:
+    userInfoUri: https://www.googleapis.com/plus/v1/people/me
+(6) Open SocialApplication.java of auth-server : Add google related bean and filters (similar to facebook and github).
+
+(7) rename application.properties to application.yml of "resource" project following is the content of that yml:
+
+server:
+  port: 9000
+  context-path: /resource
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://localhost:8080/me
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+(8) Now run auth-server, resource and ui projects and hit URL with port 9001 and context /zuul.
